@@ -1,6 +1,7 @@
 // Parallax Ping Ultrasonic Sensor test code
 // Axion Electronics
 // Kyle Lam, John Efseaff
+// 5V to 5V output, GND to GND, SIG to digital pin 7 (PWM)
 
 // this constant won't change.  It's the pin number
 // of the sensor's output:
@@ -59,3 +60,4 @@ long microsecondsToCentimeters(long microseconds) {
   // object we take half of the distance travelled.
   return microseconds / 29 / 2;
 }
+
