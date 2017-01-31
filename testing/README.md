@@ -1,0 +1,1 @@
+Testing directory for Arduino projects or other projects used to verify component functionality.
