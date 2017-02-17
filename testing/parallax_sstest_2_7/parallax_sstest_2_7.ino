@@ -1,13 +1,13 @@
 // 2 Parallax Ping Ultrasonic Sensors, side-by-side configuration
 // Axion Electronics
 // Kyle Lam
-// 5V to 5V output, GND to GND, RSIG to digital pin 7 (PWM), LSIG to digital pin 8 (PWM)
+// 5V to 5V output, GND to GND, RSIG to digital pin 7 (PWM), LSIG to digital pin 6 (PWM)
 
 // Distance between sensors should be 4 inches.
 
 // two PWM pins
 const int pingPinL = 7;
-const int pingPinR = 11;
+const int pingPinR = 6;
 
 void setup() {
   // to print left/right/middle and other processed outputs
@@ -16,34 +16,34 @@ void setup() {
 
 void loop() {
   // data vars
-  long durationL, inchesL, cmL, durationR, inchesR, cmR;
+  long durationL, inchesL, cmL, durationR, inchesR, cmR, threshold;
 
-  // The PING))) is triggered by a HIGH pulse of 2 or more microseconds.
-  // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
-  pinMode(pingPinL, OUTPUT);
-  pinMode(pingPinR, OUTPUT);
-  digitalWrite(pingPinL, LOW);
-  digitalWrite(pingPinR, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pingPinL, HIGH);
-  digitalWrite(pingPinR, HIGH);
-  delayMicroseconds(5);
-  digitalWrite(pingPinL, LOW);
-  digitalWrite(pingPinR, LOW);
+  //threshold = 10; //10cm ~ 4in
 
-  // The same pin is used to read the signal from the PING))): a HIGH
-  // pulse whose duration is the time (in microseconds) from the sending
-  // of the ping to the reception of its echo off of an object.
-  pinMode(pingPinL, INPUT);
-  pinMode(pingPinR, INPUT);
-  durationL = pulseIn(pingPinL, HIGH);
-  durationR = pulseIn(pingPinR, HIGH);
+  durationL = durationOfPing(pingPinL);
+  durationR = durationOfPing(pingPinR);
 
   // convert the time into a distance
   inchesL = microsecondsToInches(durationL);
   inchesR = microsecondsToInches(durationR);
   cmL = microsecondsToCentimeters(durationL);
   cmR = microsecondsToCentimeters(durationR);
+
+  threshold = cmR*cmR - cmL*cmL;
+
+  if(abs(threshold) <= 100){
+    Serial.println("middle");
+  }
+  if(threshold > 100){
+    Serial.println("left");
+  }
+  if(threshold < -100){
+    Serial.println("right");
+  }
+
+  if(cmR > 50 && cmL > 50){
+    Serial.println("no object");
+  }
 
   Serial.print("LeftSensor: ");
   Serial.print(inchesL);
@@ -58,8 +58,9 @@ void loop() {
   Serial.print(cmR);
   Serial.print("cm");
   Serial.println();
+  Serial.println();
 
-  delay(100);
+  delay(1000);
 }
 
 long microsecondsToInches(long microseconds) {
@@ -77,3 +78,26 @@ long microsecondsToCentimeters(long microseconds) {
   // object we take half of the distance travelled.
   return microseconds / 29 / 2;
 }
+
+long durationOfPing(int pin){
+  long duration;
+
+  // The PING))) is triggered by a HIGH pulse of 2 or more microseconds.
+  // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pin, LOW);
+
+  // The same pin is used to read the signal from the PING))): a HIGH
+  // pulse whose duration is the time (in microseconds) from the sending
+  // of the ping to the reception of its echo off of an object.
+  pinMode(pin, INPUT);
+  duration = pulseIn(pin, HIGH);
+  
+  return duration;
+}
+
+
