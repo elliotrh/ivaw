@@ -1,7 +1,7 @@
 // 2 Parallax Ping Ultrasonic Sensors, side-by-side configuration
 // Axion Electronics
 // Kyle Lam
-// 5V to 5V output, GND to GND, RSIG to digital pin 7 (PWM), LSIG to digital pin 6 (PWM)
+// 5V to 5V output, GND to GND, LSIG to digital pin 7 (PWM), RSIG to digital pin 6 (PWM)
 
 // Distance between sensors should be 4 inches.
 
@@ -16,12 +16,25 @@ void setup() {
 
 void loop() {
   // data vars
-  long durationL, inchesL, cmL, durationR, inchesR, cmR, threshold;
-
+  long durationL, inchesL, cmL, durationR, inchesR, cmR, threshold, avgL, avgR, T, d;
+  int count = 0;
   //threshold = 10; //10cm ~ 4in
+  //d = 10;
 
-  durationL = durationOfPing(pingPinL);
-  durationR = durationOfPing(pingPinR);
+  //d == 6in ~ 15cm
+  d = 15;
+
+  avgL = 0;
+  avgR = 0;
+  
+  while(count < 100){
+  avgL += durationOfPing(pingPinL);
+  avgR += durationOfPing(pingPinR);
+  count++;
+  }
+
+  durationL = avgL/count;
+  durationR = avgR/count;
 
   // convert the time into a distance
   inchesL = microsecondsToInches(durationL);
@@ -30,18 +43,19 @@ void loop() {
   cmR = microsecondsToCentimeters(durationR);
 
   threshold = cmR*cmR - cmL*cmL;
+  T = d*d;
 
-  if(abs(threshold) <= 100){
+  if(abs(threshold) <= T){
     Serial.println("middle");
   }
-  if(threshold > 100){
+  if(threshold > T){
     Serial.println("left");
   }
-  if(threshold < -100){
+  if(threshold < -T){
     Serial.println("right");
   }
 
-  if(cmR > 50 && cmL > 50){
+  if(cmR > T/2 && cmL > T/2){
     Serial.println("no object");
   }
 
@@ -60,7 +74,7 @@ void loop() {
   Serial.println();
   Serial.println();
 
-  delay(1000);
+  delay(500);
 }
 
 long microsecondsToInches(long microseconds) {
