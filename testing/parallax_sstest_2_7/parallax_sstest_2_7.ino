@@ -6,12 +6,15 @@
 // Distance between sensors should be 4 inches.
 
 // two PWM pins
-const int pingPinL = 7;
-const int pingPinR = 6;
+const int pingPinL = 6;
+const int pingPinR = 7;
+const int motorPin = 31;
 
 void setup() {
   // to print left/right/middle and other processed outputs
   Serial.begin(9600);
+  pinMode(motorPin, OUTPUT);
+
 }
 
 void loop() {
@@ -22,12 +25,11 @@ void loop() {
   //d = 10;
 
   //d == 6in ~ 15cm
-  d = 15;
-
+  d = 25.5;
   avgL = 0;
   avgR = 0;
   
-  while(count < 100){
+  while(count < 50){
   avgL += durationOfPing(pingPinL);
   avgR += durationOfPing(pingPinR);
   count++;
@@ -47,6 +49,10 @@ void loop() {
 
   if(abs(threshold) <= T){
     Serial.println("middle");
+    digitalWrite(motorPin, LOW);
+  }
+  else{
+    digitalWrite(motorPin, HIGH);
   }
   if(threshold > T){
     Serial.println("left");
@@ -74,7 +80,7 @@ void loop() {
   Serial.println();
   Serial.println();
 
-  delay(500);
+  delay(100);
 }
 
 long microsecondsToInches(long microseconds) {
