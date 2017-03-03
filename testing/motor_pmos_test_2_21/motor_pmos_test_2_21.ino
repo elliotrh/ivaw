@@ -5,7 +5,7 @@
 
 // this constant won't change.  It's the pin number
 // of the sensor's output:
-const int pingPin = 30;
+const int pingPin = 31;
 
 void setup() {
   // initialize serial communication for serial monitor
@@ -16,12 +16,9 @@ void setup() {
 
 void loop() {
 
-  digitalWrite(pingPin, HIGH);
-  delay(1000);
   digitalWrite(pingPin, LOW);
   delay(1000);
   digitalWrite(pingPin, HIGH);
-
   delay(1000);
 }
 
