@@ -151,103 +151,90 @@ void setup() {
 }
 
 void loop(){
+      digitalWrite(mPin_Right_UU, HIGH);
+    delay(100);
+    digitalWrite(mPin_Right_UU, LOW);
+    delay(100);
+    digitalWrite(mPin_Right_UU, HIGH);
+    delay(100);
 
-  turnOffAll();
+    digitalWrite(mPin_Right_UM, HIGH);
+    delay(100);
+    digitalWrite(mPin_Right_UM, LOW);
+    delay(100);
+    digitalWrite(mPin_Right_UM, HIGH);
+    delay(100);
 
-  // PARALLAX PING SECTION
-  // data vars
-  long durationL, inchesL, cmL, durationR, inchesR, cmR, threshold, avgL, avgR, T, d, stopdist;
-  int count = 0;
-  //threshold = 10; //10cm ~ 4in
-  //d = 10;
+        digitalWrite(mPin_Right_LM, HIGH);
+    delay(100);
+    digitalWrite(mPin_Right_LM, LOW);
+    delay(100);
+    digitalWrite(mPin_Right_LM, HIGH);
+    delay(100);
 
-  //d == 6in ~ 15cm
-  d = 25;
+        digitalWrite(mPin_Right_LL, HIGH);
+    delay(100);
+    digitalWrite(mPin_Right_LL, LOW);
+    delay(100);
+    digitalWrite(mPin_Right_LL, HIGH);
+    delay(100);
 
-  avgL = 0;
-  avgR = 0;
-  
-  while(count < 100){
-  avgL += durationOfPing(pingPinL);
-  avgR += durationOfPing(pingPinR);
-  count++;
-  }
+        digitalWrite(mPin_Left_UU, HIGH);
+    delay(100);
+    digitalWrite(mPin_Left_UU, LOW);
+    delay(100);
+    digitalWrite(mPin_Left_UU, HIGH);
+    delay(100);
 
-  durationL = avgL/count;
-  durationR = avgR/count;
+        digitalWrite(mPin_Left_UM, HIGH);
+    delay(100);
+    digitalWrite(mPin_Left_UM, LOW);
+    delay(100);
+    digitalWrite(mPin_Left_UM, HIGH);
+    delay(100);
 
-  // convert the time into a distance
-  inchesL = microsecondsToInches(durationL);
-  inchesR = microsecondsToInches(durationR);
-  cmL = microsecondsToCentimeters(durationL);
-  cmR = microsecondsToCentimeters(durationR);
+        digitalWrite(mPin_Left_LM, HIGH);
+    delay(100);
+    digitalWrite(mPin_Left_LM, LOW);
+    delay(100);
+    digitalWrite(mPin_Left_LM, HIGH);
+    delay(100);
 
-  threshold = cmR*cmR - cmL*cmL;
-  T = d*d;
-  stopdist = 100;
+        digitalWrite(mPin_Left_LL, HIGH);
+    delay(100);
+    digitalWrite(mPin_Left_LL, LOW);
+    delay(100);
+    digitalWrite(mPin_Left_LL, HIGH);
+    delay(100);
 
+        digitalWrite(mPin_Center_UU, HIGH);
+    delay(100);
+    digitalWrite(mPin_Center_UU, LOW);
+    delay(100);
+    digitalWrite(mPin_Center_UU, HIGH);
+    delay(100);
 
+        digitalWrite(mPin_Center_UM, HIGH);
+    delay(100);
+    digitalWrite(mPin_Center_UM, LOW);
+    delay(100);
+    digitalWrite(mPin_Center_UM, HIGH);
+    delay(100);
 
-  
- //float rangetest = requestRange();
- //Serial.print("Range Test:   "); Serial.print(range);
+        digitalWrite(mPin_Center_LM, HIGH);
+    delay(100);
+    digitalWrite(mPin_Center_LM, LOW);
+    delay(100);
+    digitalWrite(mPin_Center_LM, HIGH);
+    delay(100);
 
-   
-  // MAXSONAR SECTION
- takeRangeReading(); //Tell the sensor to perform a ranging cycle
- delay(100); //Wait for sensor to finish
- word MSrange = requestRange(); //Get the range from the sensor
-
- //Serial.print("Range: "); Serial.print(MSrange); Serial.println(" cm."); //Print to the user
+        digitalWrite(mPin_Center_LL, HIGH);
+    delay(100);
+    digitalWrite(mPin_Center_LL, LOW);
+    delay(100);
+    digitalWrite(mPin_Center_LL, HIGH);
+    delay(100);
  
- 
- //DISPLAY/ACTIVATE MOTORS SECTION
-
-//  if(MSrange < T){
-//    Serial.println("WARNING: OBSTACLE AHEAD.");
-//  }
-  currTime = millis();
-  int side = 0;
-  if(MSrange < stopdist || cmL < stopdist || cmR < stopdist){
-    side = findMin(MSrange, cmL, cmR);
-    if((currTime - prevTime) > stopdist/2){
-       turnOn(side);
-       prevTime = currTime;
-    }
-  }
-  else if(MSrange < 2*stopdist || cmL < 2*stopdist || cmR < 2*stopdist){
-    side = findMin(MSrange, cmL, cmR);
-    if((currTime - prevTime) > (stopdist)){
-       turnOn(side);
-       prevTime = currTime;
-    }
-  }
-  else if(MSrange < 3*stopdist || cmL < 3*stopdist || cmR < 3*stopdist){
-    side = findMin(MSrange, cmL, cmR);
-    if((currTime - prevTime) > (2*stopdist)){
-       turnOn(side);
-       prevTime = currTime;
-    }
-  }
-  else{
-    turnOffAll();
-  }
-
-//  Serial.print("LeftSensor: ");
-//  Serial.print(inchesL);
-//  Serial.print("in, ");
-//  Serial.print(cmL);
-//  Serial.print("cm");
-//  Serial.println();
-//
-//  Serial.print("RightSensor: ");
-//  Serial.print(inchesR);
-//  Serial.print("in, ");
-//  Serial.print(cmR);
-//  Serial.print("cm");
-//  Serial.println();
-//  Serial.println();
-  delay(250);
 }
 
 
