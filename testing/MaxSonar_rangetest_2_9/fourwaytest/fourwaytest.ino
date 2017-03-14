@@ -63,96 +63,72 @@ void setup() {
   pinMode(mPin_Left_LL, OUTPUT);
 
   //Startup Sequence to test all motors at startup
+  turnOffAll();
+    delay(500);
+    digitalWrite(mPin_Right_UU, LOW);
+    delay(500);
+    digitalWrite(mPin_Right_UU, HIGH);
+    delay(500);
 
-//    digitalWrite(mPin_Right_UU, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Right_UU, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Right_UU, HIGH);
-//    delay(100);
-//
-//    digitalWrite(mPin_Right_UM, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Right_UM, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Right_UM, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Right_LM, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Right_LM, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Right_LM, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Right_LL, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Right_LL, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Right_LL, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Left_UU, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Left_UU, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Left_UU, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Left_UM, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Left_UM, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Left_UM, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Left_LM, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Left_LM, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Left_LM, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Left_LL, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Left_LL, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Left_LL, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Center_UU, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Center_UU, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Center_UU, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Center_UM, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Center_UM, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Center_UM, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Center_LM, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Center_LM, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Center_LM, HIGH);
-//    delay(100);
-//
-//        digitalWrite(mPin_Center_LL, HIGH);
-//    delay(100);
-//    digitalWrite(mPin_Center_LL, LOW);
-//    delay(100);
-//    digitalWrite(mPin_Center_LL, HIGH);
-//    delay(100);
+    digitalWrite(mPin_Right_UM, LOW);
+    delay(500);
+    digitalWrite(mPin_Right_UM, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Right_LM, LOW);
+    delay(500);
+    digitalWrite(mPin_Right_LM, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Right_LL, LOW);
+    delay(500);
+    digitalWrite(mPin_Right_LL, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Left_UU, LOW);
+    delay(500);
+    digitalWrite(mPin_Left_UU, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Left_UM, LOW);
+    delay(500);
+    digitalWrite(mPin_Left_UM, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Left_LM, LOW);
+    delay(500);
+    digitalWrite(mPin_Left_LM, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Left_LL, LOW);
+    delay(500);
+    digitalWrite(mPin_Left_LL, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Center_UU, LOW);
+    delay(500);
+    digitalWrite(mPin_Center_UU, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Center_UM, LOW);
+    delay(500);
+    digitalWrite(mPin_Center_UM, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Center_LM, LOW);
+    delay(500);
+    digitalWrite(mPin_Center_LM, HIGH);
+    delay(500);
+
+    digitalWrite(mPin_Center_LL, LOW);
+    delay(500);
+    digitalWrite(mPin_Center_LL, HIGH);
+    delay(500);
  
 }
 
 void loop(){
-
-  turnOffAll();
+//turnOffAll();
 
   // PARALLAX PING SECTION
   // data vars
@@ -171,6 +147,7 @@ void loop(){
   avgL += durationOfPing(pingPinL);
   avgR += durationOfPing(pingPinR);
   count++;
+  if(count == 25) turnOffAll();
   }
 
   durationL = avgL/count;
@@ -195,8 +172,9 @@ void loop(){
    
   // MAXSONAR SECTION
  takeRangeReading(); //Tell the sensor to perform a ranging cycle
- delay(100); //Wait for sensor to finish
- word MSrange = requestRange(); //Get the range from the sensor
+ //Wait for sensor to finish
+ delay(100);
+ word MSrange = requestRange() * 1.5; //Get the range from the sensor
 
  //Serial.print("Range: "); Serial.print(MSrange); Serial.println(" cm."); //Print to the user
  
@@ -206,25 +184,27 @@ void loop(){
 //  if(MSrange < T){
 //    Serial.println("WARNING: OBSTACLE AHEAD.");
 //  }
+
+
   currTime = millis();
   int side = 0;
   if(MSrange < stopdist || cmL < stopdist || cmR < stopdist){
     side = findMin(MSrange, cmL, cmR);
-    if((currTime - prevTime) > stopdist/2){
+    if((currTime - prevTime) > stopdist/8){
        turnOn(side);
        prevTime = currTime;
     }
   }
   else if(MSrange < 2*stopdist || cmL < 2*stopdist || cmR < 2*stopdist){
     side = findMin(MSrange, cmL, cmR);
-    if((currTime - prevTime) > (stopdist)){
+    if((currTime - prevTime) > (stopdist/4)){
        turnOn(side);
        prevTime = currTime;
     }
   }
   else if(MSrange < 3*stopdist || cmL < 3*stopdist || cmR < 3*stopdist){
     side = findMin(MSrange, cmL, cmR);
-    if((currTime - prevTime) > (2*stopdist)){
+    if((currTime - prevTime) > (stopdist/2)){
        turnOn(side);
        prevTime = currTime;
     }
@@ -233,21 +213,7 @@ void loop(){
     turnOffAll();
   }
 
-//  Serial.print("LeftSensor: ");
-//  Serial.print(inchesL);
-//  Serial.print("in, ");
-//  Serial.print(cmL);
-//  Serial.print("cm");
-//  Serial.println();
-//
-//  Serial.print("RightSensor: ");
-//  Serial.print(inchesR);
-//  Serial.print("in, ");
-//  Serial.print(cmR);
-//  Serial.print("cm");
-//  Serial.println();
-//  Serial.println();
-  delay(250);
+  delay(100);
 }
 
 
